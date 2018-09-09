@@ -8,13 +8,16 @@ class ImageDownloaderService
 	end
 
 	def download_images
+		post_ids = Post.pluck :post_id
 		list_link.each do |image|
-			get_single_image(image[:link])
+			unless post_ids.include?(image[:post_id])
+				Post.create(image)
+				get_single_image(image[:link])
+			end
 		end
 	end
 
 	private
-	
 	def get_single_image(url)
 	  base_folder = ENV["HOME"] + "/google-drive"
 	  
